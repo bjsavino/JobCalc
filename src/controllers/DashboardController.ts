@@ -1,9 +1,10 @@
-const Profile = require("../models/Profile")
-const Job = require("../models/Job");
-const JobUtils = require("../Utils/JobUtils")
+import {Profile} from "../models/Profile";
+import {getRemainingDays} from "../Utils/JobUtils"
+import {Request,Response} from "express";
+import {Job} from "../models/Job"
 
-module.exports = {
-    get(req,res) {       
+export class DashboardController  {
+    static get(req: Request,res: Response) {       
         const StatusBar = {
             totalProjects: 0,
             openProjects: 0,
@@ -11,12 +12,12 @@ module.exports = {
         }
 
         const profile = Profile.get();
-        let freeHours = profile["hours-per-day"];
-        // console.log(profile);
+        let freeHours = profile.hours_per_day;
+
         const jobs = Job.getAll();
         StatusBar.totalProjects = jobs.length;
         const updatedJobs =jobs.map(job=> {
-            const remaining = JobUtils.getRemainingDays(job)
+            const remaining = getRemainingDays(job)
             const status = (remaining<=0)?"done":"progress"
 
             if (remaining<=0) {
@@ -24,14 +25,14 @@ module.exports = {
             }
             else {
                 StatusBar.openProjects++;
-                freeHours-=job["daily-hours"];
+                freeHours-=job.daily_hours;
             }
 
             return {
                 ...job,
-                'remaining-days': remaining,
+                remaining_days: remaining,
                 status: status,
-        'project-value': job['total-hours'] * profile['hour-value']
+                project_value: job.total_hours * profile.hour_value
             }
         })       
         return res.render("index",{jobs:updatedJobs, profile: profile, statusBar: StatusBar, freeHours});  

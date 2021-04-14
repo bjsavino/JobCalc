@@ -85,19 +85,19 @@
             <div class="deadline column">
               <span>Prazo</span>
               <p>
-                <% if (job["remaining-days"] <=0 ) { %>
+                <% if (job.remaining_days <=0 ) { %>
                     Prazo Finalizado
                 <% } else { %>
-                   <%= job["remaining-days"] %>  dias para a entrega
+                   <%= job.remaining_days %>  dia<%= job.remaining_days>1?"s":"" %> para a entrega
                 <% } %>
               </p>
             </div>
             <div class="amount column">
               <span>Valor</span>
-              <p>R$ <%= Number(job["project-value"]) %> </p>
+              <p>R$ <%= Number(job.project_value) %> </p>
             </div>
             <div class="status badge column">
-              <%= job["status"]==="progress"?"Em Andamento":"Encerrado" %> 
+              <%= job.status ==="progress"?"Em Andamento":"Encerrado" %> 
             </div>
             <div class="actions column flex">
               <p class="sr-only">Ações</p>
