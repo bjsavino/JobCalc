@@ -94,7 +94,7 @@
             </div>
             <div class="amount column">
               <span>Valor</span>
-              <p>R$ <%= Number(job.project_value) %> </p>
+              <p>R$ <%= job.project_value.toFixed(2).replace(".",",") %> </p>
             </div>
             <div class="status badge column">
               <%= job.status ==="progress"?"Em Andamento":"Encerrado" %> 

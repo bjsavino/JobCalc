@@ -1,4 +1,4 @@
-let jobData: Job[] = [
+/*let jobData: Job[] = [
     {
         id: 1,
         name: 'Pizzaria Guloso',
@@ -18,18 +18,18 @@ let jobData: Job[] = [
         'created_at': new Date(1617642888706)
     }
 ]
+*/
+const Database = require('../db/config');
 
 export class Job {
-    id: number;
     name: string;
     'daily_hours': number;
     'total_hours': number;
-    'project_value': number;
-    'remaining_days': number;
-    'created_at': Date;
+    'project_value'?: number;
+    'remaining_days'?: number;
+    'created_at'?: Date;
 
-    constructor(id:number, name:string ,daily_hours:number,total_hours:number,project_value:number,remaining_days:number,created_at:Date) {
-        this.id = id;
+    constructor(name:string ,daily_hours:number,total_hours:number,project_value:number,remaining_days:number,created_at:Date) {
         this.name = name;
         this.daily_hours = daily_hours;
         this.total_hours = total_hours;
@@ -37,39 +37,64 @@ export class Job {
         this.remaining_days = remaining_days;
         this.created_at = created_at;
     }
-    static getAll(): Job[] {
-        return jobData;
+    static async getAll(): Promise<Job[]> {
+        const db = await Database();
+
+        const jobs:Job[] = await db.all("SELECT * FROM jobs");
+        
+        await db.close();
+
+        return jobs;
     }
 
-    static get(jobId: number) {
+    static async get(jobId: number) {
+        const db = await Database();
+        const jobSelected = await db.get("SELECT * FROM jobs WHERE id = ?", jobId)
 
-        const jobSelected = jobData.find(job => job.id === jobId);
+        await db.close();
+       // jobData.find(job => job.id === jobId);
         return jobSelected;
     }
 
-    static create(newjob: Job) {
-        jobData.push(newjob);
+    static async create(newJob: Job) {
+        const db = await Database();
+
+        await db.exec(`INSERT INTO jobs (
+          name,
+          daily_hours,
+          total_hours,
+          created_at
+        ) VALUES (
+          "${newJob.name}",
+          ${newJob.daily_hours},
+          ${newJob.total_hours},
+          "${newJob.created_at}"
+        )`)
+    
+        await db.close()
+
     }
 
-    static update(jobId: number,jobUpdate: Job) {
+    static async update(jobId: number,jobUpdate: Job) {
 
-        const jobSelected = jobData.find( job => job.id === jobId);
-
-        const updatedJob = {
-            ...jobSelected,
-            ...jobUpdate
-        }
-        jobData = jobData.map(job => {
-            if (job.id === jobId)  {
-                job = updatedJob
-            }
-            return job;
-        });
+        const db = await Database();
+        console.log("jjjjjjjjjjjjjjjjjjj",jobUpdate);
+        await db.run(`UPDATE jobs SET 
+        name = "${jobUpdate.name}",
+        daily_hours = ${Number(jobUpdate.daily_hours)},
+        total_hours = ${Number(jobUpdate.total_hours)}
+        WHERE id = ${jobId}
+        `);
+    
+        await db.close()
     }
 
-    static delete(jobId: number){
-        const jobSelected = jobData.find( job => job.id === jobId);
-        jobData = jobData.filter(job=>job.id!==jobId);
+    static async delete(jobId: number){
+        const db = await Database()
+
+        await db.run(`DELETE FROM jobs WHERE id = ${jobId}`)
+    
+        await db.close()
     }
 
 

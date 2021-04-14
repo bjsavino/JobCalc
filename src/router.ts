@@ -7,7 +7,11 @@ import { DashboardController } from "./controllers/DashboardController";
 
 
 const router = Router();
-
+router.get('/login', (req, res) => {res.render("login")});
+router.post("/login", (req,res) =>{
+    console.log(req.body);
+    res.redirect("/");
+})
 router.get('/', DashboardController.get);
 router.get('/job', JobController.showForm);
 router.post('/job', JobController.create);

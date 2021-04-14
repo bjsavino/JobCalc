@@ -4,22 +4,22 @@ import {Request,Response} from "express";
 import {Job} from "../models/Job"
 
 export class DashboardController  {
-    static get(req: Request,res: Response) {       
+    static async get(req: Request,res: Response) {       
         const StatusBar = {
             totalProjects: 0,
             openProjects: 0,
             finishedProjects: 0
         }
 
-        const profile = Profile.get();
+        const profile = await Profile.get();
         let freeHours = profile.hours_per_day;
-
-        const jobs = Job.getAll();
+        const jobs = await Job.getAll();
         StatusBar.totalProjects = jobs.length;
-        const updatedJobs =jobs.map(job=> {
-            const remaining = getRemainingDays(job)
-            const status = (remaining<=0)?"done":"progress"
 
+        const updatedJobs =jobs.map(job=> {
+            const remaining = getRemainingDays(job);
+            const status = (remaining<=0)?"done":"progress"
+            
             if (remaining<=0) {
                 StatusBar.finishedProjects++;
             }

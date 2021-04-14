@@ -1,12 +1,4 @@
-let profileData: Profile = {
-    name : "Bruno",
-    avatar : "https://avatars.githubusercontent.com/u/13129289?s=400&u=fb4c8747024c6e29e89fb53c54bb5b7b0d885963&v=4",
-    monthly_budget : 3000,
-    hours_per_day: 8,
-    days_per_week:5,
-    vacation_per_year : 4,
-    hour_value: 75    
-}
+const Database = require('../db/config');
 
 export class Profile {
 
@@ -28,19 +20,38 @@ export class Profile {
         this.hour_value = hour_value;
     }
 
-    static get() {
+    static async get() {
+        const db = await Database();
 
-        return profileData;
+        const profile: Profile = await db.get("SELECT * FROM profile");
+
+        await db.close();
+
+        return profile;
     }
 
-    static update(updatedProfile: Profile){
-        profileData = updatedProfile
+    static async update(updatedProfile: Profile){
+
+        const db = await Database()
+
+        db.run(`UPDATE profile SET
+            name = "${updatedProfile.name}",
+            avatar = "${updatedProfile.avatar}",
+            monthly_budget = ${updatedProfile.monthly_budget},
+            days_per_week = ${updatedProfile.days_per_week},
+            hours_per_day = ${updatedProfile.hours_per_day},
+            vacation_per_year = ${updatedProfile.vacation_per_year},
+            hour_value = ${updatedProfile.hour_value}
+            `);
+
+        await db.close()
+
     }
     
-    static CalculateHoursValue() {
-        const weeksWork = 52 - profileData.vacation_per_year;
-        const totalHoursPerYear = profileData.hours_per_day * profileData.days_per_week * weeksWork;
-        const hoursValue = (12 * profileData.monthly_budget) / totalHoursPerYear;
-        profileData.hour_value = hoursValue; 
+    static GetCalculatedHoursValue(vacation_per_year:number, hours_per_day:number, days_per_week:number, monthly_budget:number): number {
+        const weeksWork = 52 - vacation_per_year;
+        const totalHoursPerYear = hours_per_day * days_per_week * weeksWork;
+        const hoursValue = (12 * monthly_budget) / totalHoursPerYear;
+        return hoursValue;
     }
 }
