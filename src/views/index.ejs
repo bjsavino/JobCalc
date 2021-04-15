@@ -30,16 +30,22 @@
         <section id="top" class="animate-up">
           <h2 class="sr-only">Homepage</h2>
           <img id="logo" src="./images/logo.svg" alt="Logo" />
-          <span id="notification">
-            <img src="./images/alert-octagon.svg" alt="Alerta" />
-            Você tem <%= freeHours %>  horas livres no seu dia
-          </span>
+          <% if (freeHours>0) { %>
+            <span id="notification">
+              <img src="./images/alert-octagon.svg" alt="Alerta" />
+              Você tem <%= freeHours %>  horas livres no seu dia
+            </span>
+          <% } %>
+         
+          <div id="buttons-top">
           <a href="/profile" id="avatar-profile">
             <p><%= profile.name %>  <span>Ver perfil</span></p>
             <img
               src= <%= profile.avatar %> 
             />
           </a>
+          <a href="/logout" id="logout">Sair</a>
+        </div>
         </section>
 
         <div class="separator"></div>

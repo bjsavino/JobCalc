@@ -8,12 +8,15 @@ export class JobController  {
     }
     static async create(req: Request,res: Response) {
 
-        const profile = await Profile.get();
+   
+        var loggedUser:any = {...req.user};
+        const profile = await Profile.getByUsername(loggedUser.gitHubUser);
 
         var projectValue = Number(profile.hour_value) * Number(req.body["total-hours"]);
         var projectDuraction = Math.floor(req.body["total-hours"]/req.body["daily-hours"]);
         
         let newJob: Job = {
+            owner: profile.gitHubUser+"",
             name: req.body["name"],
             daily_hours: Number(req.body["daily-hours"]),
             total_hours: Number(req.body["total-hours"]),
@@ -31,11 +34,12 @@ export class JobController  {
     }
     static async update(req: Request, res: Response) {
         const jobId = Number(req.params.id);
-
+        var loggedUser:any = {...req.user};
         let updatedJob: Job = {
+            owner: loggedUser.gitHubUser,
             name: req.body["name"],
             daily_hours: Number(req.body["daily-hours"]),
-            total_hours: Number(req.body["total-hours"]),         
+            total_hours: Number(req.body["total-hours"])        
         }
 
         await Job.update(jobId,updatedJob);

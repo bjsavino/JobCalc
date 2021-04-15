@@ -5,7 +5,8 @@ import { Profile } from "../models/Profile"
 export class ProfileController  {
 
     static async get(req: Request, res: Response) {
-        const profile = await Profile.get();
+        var loggedUser:any = {...req.user};
+        const profile = await Profile.getByUsername(loggedUser.gitHubUser);
         return res.render("profile",{profile:profile})
     }
 
@@ -17,8 +18,9 @@ export class ProfileController  {
             Number(req.body["days-per-week"]),
             Number(req.body["monthly-budget"])
         );
-    
+        var loggedUser:any = {...req.user};
         const updatedProfile: Profile = {
+            gitHubUser: loggedUser.gitHubUser,
             name: req.body["name"],
             avatar: req.body["avatar"],
             monthly_budget: Number(req.body["monthly-budget"]),

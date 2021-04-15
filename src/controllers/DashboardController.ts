@@ -10,10 +10,10 @@ export class DashboardController  {
             openProjects: 0,
             finishedProjects: 0
         }
-
-        const profile = await Profile.get();
+        var loggedUser:any = {...req.user};
+        const profile = await Profile.getByUsername(loggedUser.gitHubUser);
         let freeHours = profile.hours_per_day;
-        const jobs = await Job.getAll();
+        const jobs = await Job.getAll(loggedUser.gitHubUser);
         StatusBar.totalProjects = jobs.length;
 
         const updatedJobs =jobs.map(job=> {

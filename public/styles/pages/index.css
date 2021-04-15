@@ -68,6 +68,17 @@
   border: 0.156rem solid #F1972C; /* 2.5px of 16px root*/
 }
 
+#buttons-top {
+  display:flex;
+}
+#logout {
+  color: white;
+}
+#logout:hover {
+  text-decoration:underline;
+  color: var(--color-secondary);
+}
+
 /* 
  * summary
 /* -------------------------------------------------- */

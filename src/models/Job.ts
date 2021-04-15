@@ -23,24 +23,26 @@ const Database = require('../db/config');
 
 export class Job {
     name: string;
+    owner: string;
     'daily_hours': number;
     'total_hours': number;
     'project_value'?: number;
     'remaining_days'?: number;
     'created_at'?: Date;
 
-    constructor(name:string ,daily_hours:number,total_hours:number,project_value:number,remaining_days:number,created_at:Date) {
+    constructor(owner:string, name:string ,daily_hours:number,total_hours:number,project_value:number,remaining_days:number,created_at:Date) {
         this.name = name;
         this.daily_hours = daily_hours;
         this.total_hours = total_hours;
         this.project_value = project_value;
         this.remaining_days = remaining_days;
         this.created_at = created_at;
+        this.owner = owner;
     }
-    static async getAll(): Promise<Job[]> {
+    static async getAll(owner:string): Promise<Job[]> {
         const db = await Database();
 
-        const jobs:Job[] = await db.all("SELECT * FROM jobs");
+        const jobs:Job[] = await db.all(`SELECT * FROM jobs WHERE owner = "${owner}"`);
         
         await db.close();
 
@@ -63,12 +65,14 @@ export class Job {
           name,
           daily_hours,
           total_hours,
-          created_at
+          created_at,
+          owner
         ) VALUES (
           "${newJob.name}",
           ${newJob.daily_hours},
           ${newJob.total_hours},
-          "${newJob.created_at}"
+          "${newJob.created_at}",
+          "${newJob.owner}"
         )`)
     
         await db.close()

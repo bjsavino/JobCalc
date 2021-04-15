@@ -1,7 +1,7 @@
 const Database = require('../db/config');
 
 export class Profile {
-
+    id?:number
     name: string;
     avatar : string;
     monthly_budget : number;
@@ -9,8 +9,10 @@ export class Profile {
     days_per_week:number;
     vacation_per_year : number;
     hour_value: number;
+    gitHubUser?: string;
+    pass?: string;
     
-    constructor(name: string,avatar: string, monthly_budget:number, hours_per_day: number, days_per_week: number, vacation_per_year: number, hour_value: number) {
+    constructor(name: string,avatar: string, monthly_budget:number, hours_per_day: number, days_per_week: number, vacation_per_year: number, hour_value: number, gitHubUser:string, pass:string, id:number) {
         this.name = name;
         this.avatar = avatar;
         this.monthly_budget = monthly_budget;
@@ -18,6 +20,9 @@ export class Profile {
         this.days_per_week = days_per_week;
         this.vacation_per_year = vacation_per_year;
         this.hour_value = hour_value;
+        this.gitHubUser = gitHubUser;
+        this.pass = pass;
+        this.id = id;
     }
 
     static async get() {
@@ -29,12 +34,21 @@ export class Profile {
 
         return profile;
     }
+    static async getByUsername(username:string) {
+        const db = await Database();
+
+        const profile: Profile = await db.get(`SELECT * FROM profile WHERE gitHubUser="${username}"`);
+
+        await db.close();
+
+        return profile;
+    }
 
     static async update(updatedProfile: Profile){
 
         const db = await Database()
-
-        db.run(`UPDATE profile SET
+        console.log("githubuser=====",updatedProfile)
+        await db.run(`UPDATE profile SET
             name = "${updatedProfile.name}",
             avatar = "${updatedProfile.avatar}",
             monthly_budget = ${updatedProfile.monthly_budget},
@@ -42,10 +56,31 @@ export class Profile {
             hours_per_day = ${updatedProfile.hours_per_day},
             vacation_per_year = ${updatedProfile.vacation_per_year},
             hour_value = ${updatedProfile.hour_value}
+            WHERE gitHubUser = "${updatedProfile.gitHubUser}"
             `);
 
         await db.close()
 
+    }
+
+    static async new(username:string, pass: string) {
+        const db = await Database();
+
+        await db.run(`INSERT INTO profile (
+            name,
+            avatar, 
+            gitHubUser,
+            pass,
+            hour_value
+        ) VALUES (
+            "${username}",
+            "https://avatars.githubusercontent.com/${username}",
+            "${username}",
+            "${pass}",
+            0
+        );`);
+
+        await db.close();
     }
     
     static GetCalculatedHoursValue(vacation_per_year:number, hours_per_day:number, days_per_week:number, monthly_budget:number): number {
