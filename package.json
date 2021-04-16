@@ -4,10 +4,6 @@
   "description": "projeto da maratona discover 02 da rockseat",
   "main": "src/server.js",
   "dependencies": {
-    "@types/bcryptjs": "^2.4.2",
-    "@types/ejs": "^3.0.6",
-    "@types/passport": "^1.0.6",
-    "@types/passport-local": "^1.0.33",
     "bcrypt": "^5.0.1",
     "connect-flash": "^0.1.1",
     "ejs": "^3.1.6",
@@ -19,6 +15,10 @@
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/ejs": "^3.0.6",
+    "@types/passport": "^1.0.6",
+    "@types/passport-local": "^1.0.33",
     "@types/bcrypt": "^3.0.1",
     "@types/connect-flash": "0.0.36",
     "@types/express": "^4.17.11",
@@ -29,7 +29,9 @@
   },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "init:db": "tsc && node dist/db/init"
+    "init:db": "tsc && node dist/db/init",
+    "build":"tsc && cp -r src/views dist/views",
+    "start": "node dist/server"
   },
   "author": "Bruno Savino",
   "license": "MIT"

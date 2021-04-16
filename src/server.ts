@@ -36,5 +36,5 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.static("public"))
 app.use(router);
 
-
-app.listen(3030,()=>console.log("rodando"));
+const PORT = process.env.PORT || 3030;
+app.listen(PORT,()=>console.log("rodando"));
