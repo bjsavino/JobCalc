@@ -47,7 +47,6 @@ export class Profile {
     static async update(updatedProfile: Profile){
 
         const db = await Database()
-        console.log("githubuser=====",updatedProfile)
         await db.run(`UPDATE profile SET
             name = "${updatedProfile.name}",
             avatar = "${updatedProfile.avatar}",

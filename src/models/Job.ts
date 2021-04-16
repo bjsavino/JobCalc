@@ -82,7 +82,6 @@ export class Job {
     static async update(jobId: number,jobUpdate: Job) {
 
         const db = await Database();
-        console.log("jjjjjjjjjjjjjjjjjjj",jobUpdate);
         await db.run(`UPDATE jobs SET 
         name = "${jobUpdate.name}",
         daily_hours = ${Number(jobUpdate.daily_hours)},
