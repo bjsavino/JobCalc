@@ -30,7 +30,7 @@ module.exports = function(passport: passport.Authenticator ) {
     })
   );
   passport.serializeUser(function(user:any, done)  {
-    done(null, user.gitHubUser);
+    done(null, user.gitHubUser.toLowerCase());
   });
 
   passport.deserializeUser(async function(username:string, done) {

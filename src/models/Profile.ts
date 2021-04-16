@@ -37,7 +37,7 @@ export class Profile {
     static async getByUsername(username:string) {
         const db = await Database();
 
-        const profile: Profile = await db.get(`SELECT * FROM profile WHERE gitHubUser="${username}"`);
+        const profile: Profile = await db.get(`SELECT * FROM profile WHERE gitHubUser="${username.toLowerCase()}"`);
 
         await db.close();
 
@@ -56,7 +56,7 @@ export class Profile {
             hours_per_day = ${updatedProfile.hours_per_day},
             vacation_per_year = ${updatedProfile.vacation_per_year},
             hour_value = ${updatedProfile.hour_value}
-            WHERE gitHubUser = "${updatedProfile.gitHubUser}"
+            WHERE gitHubUser = "${(updatedProfile.gitHubUser+"").toLowerCase()}"
             `);
 
         await db.close()
@@ -74,8 +74,8 @@ export class Profile {
             hour_value
         ) VALUES (
             "${username}",
-            "https://avatars.githubusercontent.com/${username}",
-            "${username}",
+            "https://avatars.githubusercontent.com/${username.toLowerCase()}",
+            "${username.toLowerCase()}",
             "${pass}",
             0
         );`);
